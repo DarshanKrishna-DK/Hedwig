@@ -56,42 +56,20 @@ cd Hedwig
 run.bat        # Windows.  Or ./run.sh on macOS or Linux.
 ```
 
-**What `run.bat` does:** installs dependencies, compiles TypeScript, runs the unit test suite, submits a real on-chain smoke transaction (produces HashScan links), then boots the MCP server on stdio ready for Claude Desktop to attach. Leave the terminal open once it finishes. On first run it will pause and ask you to fill in `.env` with your Hedera testnet Account ID and ECDSA private key from [portal.hedera.com/dashboard](https://portal.hedera.com/dashboard).
+`run.bat` installs dependencies, compiles TypeScript, runs the unit test suite, submits a real on-chain smoke transaction (produces HashScan links), boots the MCP server on stdio, and opens the landing page site in a separate window. Leave both windows open. On first run it will pause and ask you to fill in `.env` with your Hedera testnet Account ID and ECDSA private key from [portal.hedera.com/dashboard](https://portal.hedera.com/dashboard).
 
-**Run the demo x402 server (second terminal):** this is the paid endpoint your agent will hit.
+For the paid endpoint your agent will hit, open another terminal:
 
 ```
 start-x402-server.bat                   # Windows
 node examples/x402-server/server.mjs    # cross-platform
 ```
 
-By default the server charges 0.001 HBAR per request. To switch to USDC, add `X402_ASSET=usdc` to your `.env` and restart the server. Both flows produce real on-chain settlement.
+By default the demo server charges 0.001 HBAR per request. To switch to USDC, add `X402_ASSET=usdc` to `.env` and restart the server.
 
-**Browse the landing page and docs site (third terminal, optional):**
+### Wire Hedwig into Claude Desktop
 
-```
-run-frontend.bat        # Windows
-./run-frontend.sh       # macOS or Linux
-```
-
-Site opens at [http://localhost:5173](http://localhost:5173).
-
-**Talk to your agent (Claude Desktop):** after wiring Hedwig into the MCP config and restarting, try any of these.
-
-```
-> Check my Hedera balance.
-> Send 0.05 HBAR to 0.0.9865777 with the memo "coffee tip".
-> Send 0.001 USDC to 0.0.9865777.
-> Fetch http://localhost:4021/premium/quote and pay if it costs HBAR.
-> Fetch http://localhost:4021/premium/quote and pay if it costs USDC.
-> Show me my spending report.
-```
-
----
-
-## Snippets
-
-**MCP config for Claude Desktop.** Windows path is `%APPDATA%\Claude\claude_desktop_config.json`. macOS path is `~/Library/Application Support/Claude/claude_desktop_config.json`. Restart Claude Desktop fully after saving.
+Edit `%APPDATA%\Claude\claude_desktop_config.json` on Windows, or `~/Library/Application Support/Claude/claude_desktop_config.json` on macOS. Add this block and restart Claude Desktop fully from the system tray.
 
 ```
 {
@@ -111,43 +89,24 @@ Site opens at [http://localhost:5173](http://localhost:5173).
 }
 ```
 
-**Direct SDK use.** Import the tools individually if you're wiring Hedwig into your own server rather than through MCP.
+Open a new chat and check the plug icon in the bottom-left. You should see `hedwig` with seven tools.
+
+### Talk to your agent
 
 ```
-import { registerX402Fetch } from "hedwig/tools/x402-fetch";
-import { SpendingTracker } from "hedwig/spending";
-import { loadConfig } from "hedwig/config";
-
-const config = loadConfig();
-const spending = new SpendingTracker(config.budget);
-registerX402Fetch(server, config, spending);
-```
-
-**x402 server side.** Verify and settle payments in your own service using the ready-made facilitator. Works for both HBAR (`asset: "0.0.0"`) and USDC HTS (`asset: "0.0.429274"`).
-
-```
-import {
-  toFacilitatorHederaSigner,
-  createHederaSignAndSubmitTransaction,
-  createHederaVerifyPayerSignature,
-  createHederaPreflightTransfer
-} from "@x402/hedera";
-import { ExactHederaScheme } from "@x402/hedera/exact/facilitator";
-
-const signer = toFacilitatorHederaSigner({
-  getAddresses: () => [serverAccountId],
-  signAndSubmitTransaction: createHederaSignAndSubmitTransaction(buildClient, serverKey),
-  verifyPayerSignature: createHederaVerifyPayerSignature(),
-  preflightTransfer: createHederaPreflightTransfer()
-});
-const facilitator = new ExactHederaScheme(signer);
+> Check my Hedera balance.
+> Send 0.05 HBAR to 0.0.9865777 with the memo "coffee tip".
+> Send 0.001 USDC to 0.0.9865777.
+> Fetch http://localhost:4021/premium/quote and pay if it costs HBAR.
+> Fetch http://localhost:4021/premium/quote and pay if it costs USDC.
+> Show me my spending report.
 ```
 
 ---
 
 ## Live testnet transactions
 
-Every link below is a real transaction on Hedera testnet, submitted through the Hedwig MCP wallet during a live demo run. Both HBAR and USDC flows work: the ones below are USDC because that's what the demo happened to capture, but HBAR runs produce identical structure with the asset field set to `0.0.0`.
+Every link below is a real transaction on Hedera testnet, submitted through Hedwig during a live demo run.
 
 **Accounts.** Buyer: [0.0.6886052](https://hashscan.io/testnet/account/0.0.6886052). Auto-created x402 server: [0.0.9865777](https://hashscan.io/testnet/account/0.0.9865777).
 
@@ -180,8 +139,8 @@ Rows 3 and 4 are the heart of the project. Agent hit 402, signed a payment on it
 
 | Command                                        | Purpose                                                          |
 | ---------------------------------------------- | ---------------------------------------------------------------- |
-| `run.bat` / `./run.sh`                         | **Full end-to-end.** Install, build, test, smoke, launch MCP.    |
-| `run-frontend.bat` / `./run-frontend.sh`       | **Landing page + docs site** on port 5173.                       |
+| `run.bat` / `./run.sh`                         | **Full end-to-end.** Install, build, test, smoke, launch MCP + landing site. |
+| `run-frontend.bat` / `./run-frontend.sh`       | Landing page + docs site only, on port 5173.                     |
 | `start-x402-server.bat`                        | Boot the local paid endpoint on port 4021.                       |
 | `smoke.bat`                                    | Fast re-run of the on-chain smoke test only.                     |
 | `npm run build`                                | Compile the MCP server TypeScript to `dist/`.                    |
