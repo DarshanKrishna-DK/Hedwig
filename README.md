@@ -1,4 +1,4 @@
-[![Hedwig](assets/Hedwig_Logo.svg)](assets/Hedwig_Logo.svg)
+[![Hedwig](docs/hedwig_logo.png)](docs/hedwig_logo.png)
 
 # Hedwig
 
