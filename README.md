@@ -46,6 +46,22 @@
 
 ---
 
+## Tools
+
+Seven tools exposed to the agent over MCP. Every tool that moves money runs through the budget checker before it signs.
+
+| Tool                | What it does                                                                                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `check_balance`     | Return HBAR and USDC balances plus a HashScan account link. Reads from Mirror Node REST for reliability.                         |
+| `transfer_hbar`     | Send HBAR to any Hedera account. Real on-chain transfer, optional memo, HashScan link returned.                                  |
+| `transfer_usdc`     | Send USDC (HTS token `0.0.429274` on testnet) to another USDC-associated account.                                                |
+| `pay`               | Sign an x402 payment authorization without submitting anything. Useful when you want to drive the HTTP retry yourself.           |
+| `x402_fetch`        | Full protocol loop: fetch a URL, catch the 402, sign the payment, retry with the signature header, return the paid body.         |
+| `spending_report`   | Session totals, current budget usage, and a rolling history of the last 25 signed payments.                                      |
+| `request_funding`   | Return your account ID plus a link to the Hedera Portal faucet, for topping up testnet HBAR.                                     |
+
+---
+
 ## Quick start
 
 Three lines and you have a wallet an agent can drive.
@@ -137,15 +153,15 @@ Rows 3 and 4 are the heart of the project. Agent hit 402, signed a payment on it
 
 ## Scripts
 
-| Command                                        | Purpose                                                          |
-| ---------------------------------------------- | ---------------------------------------------------------------- |
-| `run.bat` / `./run.sh`                         | **Full end-to-end.** Install, build, test, smoke, launch MCP + landing site. |
-| `run-frontend.bat` / `./run-frontend.sh`       | Landing page + docs site only, on port 5173.                     |
-| `start-x402-server.bat`                        | Boot the local paid endpoint on port 4021.                       |
-| `smoke.bat`                                    | Fast re-run of the on-chain smoke test only.                     |
-| `npm run build`                                | Compile the MCP server TypeScript to `dist/`.                    |
-| `npm test`                                     | Run the 10 unit tests.                                           |
-| `npm run smoke`                                | On-chain smoke test producing HashScan links.                    |
-| `npm run build:mcpb`                           | Package as an .mcpb bundle for one-click Claude Desktop install. |
+| Command                                        | Purpose                                                                     |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `run.bat` / `./run.sh`                         | **Full end-to-end.** Install, build, test, smoke, launch MCP + landing site.|
+| `run-frontend.bat` / `./run-frontend.sh`       | Landing page + docs site only, on port 5173.                                |
+| `start-x402-server.bat`                        | Boot the local paid endpoint on port 4021.                                  |
+| `smoke.bat`                                    | Fast re-run of the on-chain smoke test only.                                |
+| `npm run build`                                | Compile the MCP server TypeScript to `dist/`.                               |
+| `npm test`                                     | Run the 10 unit tests.                                                      |
+| `npm run smoke`                                | On-chain smoke test producing HashScan links.                               |
+| `npm run build:mcpb`                           | Package as an .mcpb bundle for one-click Claude Desktop install.            |
 
 **Network:** Hedera testnet. **HBAR asset id in x402:** `0.0.0`. **USDC HTS token id:** `0.0.429274` (testnet). **HashScan:** [https://hashscan.io/testnet](https://hashscan.io/testnet).
