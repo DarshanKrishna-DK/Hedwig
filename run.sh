@@ -57,3 +57,21 @@ echo
 echo "[Hedwig] =========================================================="
 echo "[Hedwig]  Done. Copy the HashScan links above into your submission."
 echo "[Hedwig] =========================================================="
+echo
+
+# Launch frontend in background so user gets both from one command
+if [ -f projects/Hedwig-frontend/package.json ]; then
+  echo "[Hedwig] Launching landing page site in background..."
+  echo "[Hedwig] Site will be at http://localhost:5173 once Vite finishes booting."
+
+  if [[ "$OSTYPE" == "darwin"* ]] && command -v osascript >/dev/null 2>&1; then
+    # macOS: open in a new Terminal window
+    osascript -e "tell application \"Terminal\" to do script \"cd '$(pwd)' && ./run-frontend.sh\"" >/dev/null 2>&1 || true
+  elif command -v gnome-terminal >/dev/null 2>&1; then
+    gnome-terminal -- bash -c "cd '$(pwd)' && ./run-frontend.sh; exec bash" >/dev/null 2>&1 || true
+  else
+    # Fallback: run in background of current terminal
+    nohup ./run-frontend.sh >/tmp/hedwig-frontend.log 2>&1 &
+    echo "[Hedwig] Frontend logs: /tmp/hedwig-frontend.log"
+  fi
+fi
