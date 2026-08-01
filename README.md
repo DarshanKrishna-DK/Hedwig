@@ -1,25 +1,27 @@
 <p align="center">
   <a href="docs/hedwig_logo.png">
-    <img src="docs/hedwig_logo.png" alt="Hedwig" width="480" />
+    <img src="docs/hedwig_logo.png" alt="Hedwig" width="320" />
   </a>
 </p>
 
-# Hedwig
+<h1 align="center">Hedwig</h1>
 
-**An MCP wallet that gives AI agents autonomous HBAR and USDC payments on Hedera through the x402 protocol**
+<p align="center">
+  <strong>An MCP wallet that gives AI agents autonomous HBAR and USDC payments on Hedera through the x402 protocol</strong>
+</p>
 
-Payments travel over HTTP using the x402 standard, which means agents can pay for API calls or gated content the same way a browser handles a login prompt. Every settlement is a real HTS transfer, done in about three seconds, for a fixed fee under a hundredth of a cent.
+<p align="center">
+  Payments travel over HTTP using the x402 standard, which means agents can pay for API calls or gated content the same way a browser handles a login prompt. Every settlement is a real HTS transfer, done in about three seconds, for a fixed fee under a hundredth of a cent.
+</p>
 
-![x402](https://img.shields.io/badge/x402-HTTP%20402%20payments-F5A0B1?style=flat-square)
-![Hedera](https://img.shields.io/badge/Hedera-settlement-1a1a1a?style=flat-square&labelColor=B06AB3)
-![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
-![Node.js](https://img.shields.io/badge/Node.js-%3E%3D%2018-339933?style=flat-square&logo=node.js&logoColor=white)
-![MCP](https://img.shields.io/badge/protocol-MCP-B06AB3?style=flat-square)
-![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)
-
-[GitHub](https://github.com/DarshanKrishna-DK/Hedwig) &middot; [x402 docs](https://docs.x402.org) &middot; [Hedera x402 bounty](https://hedera.com/x402-bounty)
-
-[![Hedwig landing page](assets/Hedwig_HomeScreen.svg)](assets/Hedwig_HomeScreen.svg)
+<p align="center">
+  <img src="https://img.shields.io/badge/x402-HTTP%20402%20payments-F5A0B1?style=flat-square" alt="x402" />
+  <img src="https://img.shields.io/badge/Hedera-settlement-1a1a1a?style=flat-square&labelColor=B06AB3" alt="Hedera" />
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D%2018-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/protocol-MCP-B06AB3?style=flat-square" alt="MCP" />
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License" />
+</p>
 
 ---
 
