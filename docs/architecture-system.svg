@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="system-ui, -apple-system, Segoe UI, Roboto, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5568"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-size="20" font-weight="600" fill="#1a202c">Hedwig system architecture</text>
+
+  <!-- Top row: AI Agent + x402 Server -->
+  <g>
+    <rect x="60" y="80" width="330" height="90" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="2"/>
+    <text x="225" y="110" text-anchor="middle" font-size="15" font-weight="600" fill="#1e3a8a">AI agent</text>
+    <text x="225" y="135" text-anchor="middle" font-size="12" fill="#1e3a8a">Claude Desktop, Cursor, Windsurf</text>
+    <text x="225" y="155" text-anchor="middle" font-size="12" fill="#1e3a8a">(any MCP-compatible host)</text>
+  </g>
+
+  <g>
+    <rect x="510" y="80" width="330" height="90" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+    <text x="675" y="110" text-anchor="middle" font-size="15" font-weight="600" fill="#7c2d12">x402 demo server</text>
+    <text x="675" y="135" text-anchor="middle" font-size="12" fill="#7c2d12">examples/x402-server</text>
+    <text x="675" y="155" text-anchor="middle" font-size="12" fill="#7c2d12">localhost:4021 (optional)</text>
+  </g>
+
+  <!-- Arrows into Hedwig -->
+  <line x1="225" y1="170" x2="360" y2="235" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="255" y="207" font-size="11" fill="#4a5568">MCP over stdio</text>
+
+  <line x1="675" y1="170" x2="540" y2="235" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="605" y="207" font-size="11" fill="#4a5568" text-anchor="end">HTTP on port 4021</text>
+
+  <!-- Hedwig MCP box (middle) -->
+  <g>
+    <rect x="200" y="240" width="500" height="220" rx="10" fill="#f0fdf4" stroke="#16a34a" stroke-width="2.5"/>
+    <text x="450" y="270" text-anchor="middle" font-size="17" font-weight="700" fill="#14532d">Hedwig MCP</text>
+    <text x="450" y="290" text-anchor="middle" font-size="11" fill="#166534">seven tools registered on stdio</text>
+
+    <!-- Tools grid -->
+    <g font-size="12" fill="#14532d">
+      <rect x="230" y="310" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="300" y="330" text-anchor="middle">check_balance</text>
+
+      <rect x="380" y="310" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="450" y="330" text-anchor="middle">transfer_hbar</text>
+
+      <rect x="530" y="310" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="600" y="330" text-anchor="middle">transfer_usdc</text>
+
+      <rect x="230" y="350" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="300" y="370" text-anchor="middle">pay</text>
+
+      <rect x="380" y="350" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="450" y="370" text-anchor="middle">x402_fetch</text>
+
+      <rect x="530" y="350" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="600" y="370" text-anchor="middle">spending_report</text>
+
+      <rect x="380" y="390" width="140" height="30" rx="4" fill="#ffffff" stroke="#86efac" stroke-width="1"/>
+      <text x="450" y="410" text-anchor="middle">request_funding</text>
+    </g>
+
+    <text x="450" y="445" text-anchor="middle" font-size="11" fill="#166534" font-style="italic">budget caps enforced pre-sign</text>
+  </g>
+
+  <!-- Arrows to Hedera -->
+  <line x1="300" y1="460" x2="300" y2="535" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="290" y="500" font-size="10" fill="#4a5568" text-anchor="end">@hiero-ledger/sdk</text>
+
+  <line x1="450" y1="460" x2="450" y2="535" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="450" y="500" font-size="10" fill="#4a5568" text-anchor="middle">@x402/hedera</text>
+
+  <line x1="600" y1="460" x2="600" y2="535" stroke="#4a5568" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="610" y="500" font-size="10" fill="#4a5568">Mirror Node REST</text>
+
+  <!-- Hedera testnet -->
+  <g>
+    <rect x="230" y="540" width="440" height="60" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2"/>
+    <text x="450" y="568" text-anchor="middle" font-size="15" font-weight="600" fill="#4c1d95">Hedera testnet</text>
+    <text x="450" y="587" text-anchor="middle" font-size="12" fill="#4c1d95">HBAR native, USDC HTS (0.0.429274), 3s finality</text>
+  </g>
+</svg>
