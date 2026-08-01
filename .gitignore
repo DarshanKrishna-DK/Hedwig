@@ -8,3 +8,4 @@ coverage/
 .vscode/
 .idea/
 *.mcpb
+server-account.json

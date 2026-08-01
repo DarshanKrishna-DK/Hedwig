@@ -11,7 +11,7 @@ export function registerX402Fetch(
 ): void {
   server.tool(
     'x402_fetch',
-    'Fetch a URL that may be x402-gated. If the server returns 402, sign a Hedera USDC payment, retry with the payment header, and return the final response body.',
+    'Fetch a URL that may be x402-gated. If the server returns 402, sign a Hedera USDC payment, retry with the payment header, and return the final response body. Includes diagnostic info in the response for debugging.',
     {
       url: z.string().describe('The URL to fetch (may be x402-gated)'),
       method: z
@@ -37,15 +37,23 @@ export function registerX402Fetch(
         }
       }
 
+      // Diagnostic collector — always included in response so caller can debug
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const debug: Record<string, any> = { steps: [] as string[] }
+
       try {
+        debug.steps.push('creating x402 http client')
         const httpClient = await createX402HttpClient(config)
+        debug.steps.push('x402 http client ready')
 
         // ─── First attempt ───────────────────────────────────────────────
+        debug.steps.push(`first fetch: ${method} ${url}`)
         const firstResp = await fetch(url, {
           method,
           headers: headers ?? {},
           body
         })
+        debug.firstStatus = firstResp.status
 
         if (firstResp.status !== 402) {
           const text = await firstResp.text()
@@ -58,7 +66,8 @@ export function registerX402Fetch(
                     paid: false,
                     status: firstResp.status,
                     contentType: firstResp.headers.get('content-type'),
-                    body: truncate(text, 4000)
+                    body: truncate(text, 4000),
+                    debug
                   },
                   null,
                   2
@@ -69,7 +78,10 @@ export function registerX402Fetch(
         }
 
         // ─── Parse the 402 challenge ─────────────────────────────────────
+        debug.steps.push('parsing 402 challenge')
         const challenge = await firstResp.json()
+        debug.challenge = challenge
+
         const accepts = challenge.accepts ?? []
         const hederaAccept = accepts.find((a: { network: string }) =>
           a.network?.startsWith('hedera:')
@@ -86,7 +98,8 @@ export function registerX402Fetch(
                     error: 'Server does not accept Hedera payments',
                     acceptsNetworks: accepts.map(
                       (a: { network: string }) => a.network
-                    )
+                    ),
+                    debug
                   },
                   null,
                   2
@@ -97,25 +110,53 @@ export function registerX402Fetch(
           }
         }
 
-        // ─── Budget check (server declared amount is in atomic units) ────
-        const amountDecimal = fromAtomic(hederaAccept.amount)
+        // ─── Budget check ────────────────────────────────────────────────
+        const amountDecimal = fromAtomic(hederaAccept.amount, hederaAccept.asset)
+        debug.amount = amountDecimal
+        debug.asset = hederaAccept.asset
         spending.check(amountDecimal)
 
         // ─── Sign the payment ────────────────────────────────────────────
-        const payload = await httpClient.createPaymentPayload(challenge)
-        const signatureHeaders = httpClient.encodePaymentSignatureHeader(payload)
+        debug.steps.push('creating payment payload')
+        let payload
+        try {
+          payload = await httpClient.createPaymentPayload(challenge)
+          debug.payloadCreated = true
+        } catch (signErr) {
+          debug.signError = signErr instanceof Error ? signErr.message : String(signErr)
+          throw new Error(`createPaymentPayload failed: ${debug.signError}`)
+        }
+
+        debug.steps.push('encoding signature header')
+        let signatureHeaders
+        try {
+          signatureHeaders = httpClient.encodePaymentSignatureHeader(payload)
+          debug.signatureHeaderKeys = Object.keys(signatureHeaders ?? {})
+          debug.signatureHeaderSample = firstEntryPreview(signatureHeaders)
+        } catch (encErr) {
+          debug.encodeError = encErr instanceof Error ? encErr.message : String(encErr)
+          throw new Error(`encodePaymentSignatureHeader failed: ${debug.encodeError}`)
+        }
+
+        if (!signatureHeaders || Object.keys(signatureHeaders).length === 0) {
+          throw new Error('encodePaymentSignatureHeader returned no headers')
+        }
 
         // ─── Retry with the payment header ───────────────────────────────
         const retryHeaders = {
           ...(headers ?? {}),
           ...(signatureHeaders as Record<string, string>)
         }
+        debug.retryHeaderKeys = Object.keys(retryHeaders)
+        debug.steps.push(`retry fetch with ${Object.keys(signatureHeaders).join(', ')}`)
 
         const secondResp = await fetch(url, {
           method,
           headers: retryHeaders,
           body
         })
+        debug.secondStatus = secondResp.status
+        debug.secondResponseHeaders = Object.fromEntries(secondResp.headers.entries())
 
         const responseText = await secondResp.text()
         const settled = secondResp.status < 400
@@ -136,8 +177,11 @@ export function registerX402Fetch(
                   network: hederaAccept.network,
                   status: secondResp.status,
                   contentType: secondResp.headers.get('content-type'),
-                  paymentResponse: secondResp.headers.get('payment-response'),
-                  body: truncate(responseText, 4000)
+                  paymentResponse:
+                    secondResp.headers.get('payment-response') ??
+                    secondResp.headers.get('x-payment-response'),
+                  body: truncate(responseText, 4000),
+                  debug
                 },
                 null,
                 2
@@ -150,7 +194,15 @@ export function registerX402Fetch(
           content: [
             {
               type: 'text' as const,
-              text: `x402_fetch failed: ${err instanceof Error ? err.message : String(err)}`
+              text: JSON.stringify(
+                {
+                  paid: false,
+                  error: err instanceof Error ? err.message : String(err),
+                  debug
+                },
+                null,
+                2
+              )
             }
           ],
           isError: true
@@ -160,9 +212,10 @@ export function registerX402Fetch(
   )
 }
 
-function fromAtomic(atomic: string | number): string {
+function fromAtomic(atomic: string | number, asset?: string): string {
   const raw = BigInt(atomic)
-  const decimals = 6
+  // HBAR (asset id "0.0.0") uses 8 decimals (tinybars). HTS tokens like USDC use 6.
+  const decimals = asset === '0.0.0' ? 8 : 6
   const divisor = BigInt(10 ** decimals)
   const whole = raw / divisor
   const frac = raw % divisor
@@ -171,4 +224,14 @@ function fromAtomic(atomic: string | number): string {
 
 function truncate(s: string, max: number): string {
   return s.length > max ? `${s.slice(0, max)}... [truncated ${s.length - max} chars]` : s
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function firstEntryPreview(headers: any): string | null {
+  if (!headers) return null
+  const entries = Object.entries(headers)
+  if (entries.length === 0) return null
+  const [name, value] = entries[0]
+  const v = String(value)
+  return `${name}: ${v.slice(0, 32)}${v.length > 32 ? '...' : ''}`
 }
