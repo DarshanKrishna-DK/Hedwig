@@ -1,4 +1,8 @@
-[![Hedwig](docs/hedwig_logo.png)](docs/hedwig_logo.png)
+<p align="center">
+  <a href="docs/hedwig_logo.png">
+    <img src="docs/hedwig_logo.png" alt="Hedwig" width="480" />
+  </a>
+</p>
 
 # Hedwig
 
@@ -80,8 +84,6 @@ Site opens at [http://localhost:5173](http://localhost:5173).
 > Fetch http://localhost:4021/premium/quote and pay if it costs USDC.
 > Show me my spending report.
 ```
-
-Full walkthrough of every prompt lives in [DEMO.md](DEMO.md).
 
 ---
 
