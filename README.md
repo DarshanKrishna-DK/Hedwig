@@ -4,6 +4,8 @@
 
 **An MCP wallet that gives AI agents autonomous HBAR and USDC payments on Hedera through the x402 protocol**
 
+Payments travel over HTTP using the x402 standard, which means agents can pay for API calls or gated content the same way a browser handles a login prompt. Every settlement is a real HTS transfer, done in about three seconds, for a fixed fee under a hundredth of a cent.
+
 ![x402](https://img.shields.io/badge/x402-HTTP%20402%20payments-F5A0B1?style=flat-square)
 ![Hedera](https://img.shields.io/badge/Hedera-settlement-1a1a1a?style=flat-square&labelColor=B06AB3)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
