@@ -1,6 +1,6 @@
 # Hedwig
 
-An MCP wallet server that lets an AI agent hold and spend USDC on Hedera. Payments travel over HTTP using the x402 standard, which means agents can pay for API calls or gated content the same way a browser handles a login prompt. Every settlement is a real HTS transfer, done in about three seconds, for a fixed fee under a hundredth of a cent.
+An MCP wallet server that lets an AI agent hold and spend USDC and HBAR on Hedera. Payments travel over HTTP using the x402 standard, which means agents can pay for API calls or gated content the same way a browser handles a login prompt. Every settlement is a real HTS transfer, done in about three seconds, for a fixed fee under a hundredth of a cent.
 
 Built for the Hedera x402 bounty in July 2026.
 
