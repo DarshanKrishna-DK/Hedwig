@@ -80,7 +80,7 @@ Site opens at [http://localhost:5173](http://localhost:5173).
 
 ```
 > Check my Hedera balance.
-> Send 0.05 HBAR to 0.0.98 with the memo "coffee tip".
+> Send 0.05 HBAR to 0.0.9865777 with the memo "coffee tip".
 > Send 0.001 USDC to 0.0.9865777.
 > Fetch http://localhost:4021/premium/quote and pay if it costs HBAR.
 > Fetch http://localhost:4021/premium/quote and pay if it costs USDC.
