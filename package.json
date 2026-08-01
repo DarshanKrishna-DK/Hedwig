@@ -1,0 +1,61 @@
+{
+  "name": "hedwig-wallet-mcp",
+  "version": "0.1.0",
+  "description": "Hedwig - an MCP server that gives AI agents a Hedera wallet with x402 micropayments in USDC",
+  "type": "module",
+  "bin": {
+    "hedwig-wallet-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write 'src/**/*.ts' '__tests__/**/*.ts'",
+    "format:check": "prettier --check 'src/**/*.ts' '__tests__/**/*.ts'",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "smoke": "node scripts/smoke.mjs",
+    "build:mcpb": "bash scripts/build-mcpb.sh",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "@x402/core": "^2.8.0",
+    "@x402/hedera": "^2.20.0",
+    "@hiero-ledger/sdk": "^2.85.0",
+    "dotenv": "^17.2.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/node": "^22.15.21",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.5",
+    "prettier": "^3.5.3",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.57.2",
+    "vitest": "^3.2.1"
+  },
+  "keywords": [
+    "x402",
+    "hedera",
+    "wallet",
+    "mcp",
+    "usdc",
+    "payments",
+    "agent-commerce",
+    "hbar"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}

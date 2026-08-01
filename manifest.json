@@ -1,0 +1,68 @@
+{
+  "manifest_version": "0.2",
+  "name": "hedwig-wallet",
+  "display_name": "Hedwig Wallet",
+  "version": "0.1.0",
+  "description": "Give your AI agent a Hedera wallet. Autonomous USDC micropayments via x402, native HBAR and HTS transfers, budget caps, and full HashScan receipts.",
+  "author": {
+    "name": "Hedwig contributors",
+    "url": "https://github.com/"
+  },
+  "license": "MIT",
+  "keywords": ["x402", "hedera", "wallet", "usdc", "hbar", "agent", "mcp", "payments"],
+  "server": {
+    "type": "node",
+    "entry_point": "dist/index.js",
+    "mcp_config": {
+      "command": "node",
+      "args": ["${__dirname}/dist/index.js"],
+      "env": {
+        "HEDERA_ACCOUNT_ID": "${user_config.hedera_account_id}",
+        "HEDERA_PRIVATE_KEY": "${user_config.hedera_private_key}",
+        "NETWORK": "${user_config.network}",
+        "MAX_PER_CALL": "${user_config.max_per_call}",
+        "MAX_PER_DAY": "${user_config.max_per_day}"
+      }
+    }
+  },
+  "user_config": {
+    "hedera_account_id": {
+      "type": "string",
+      "title": "Hedera Account ID",
+      "description": "Your Hedera account ID, e.g. 0.0.12345",
+      "required": true,
+      "sensitive": false
+    },
+    "hedera_private_key": {
+      "type": "string",
+      "title": "Hedera Private Key",
+      "description": "Your Hedera ECDSA or ED25519 private key (hex or DER). Stored in your OS keychain.",
+      "required": true,
+      "sensitive": true
+    },
+    "network": {
+      "type": "string",
+      "title": "Network",
+      "description": "Hedera network to use",
+      "default": "hedera-testnet",
+      "required": false,
+      "sensitive": false
+    },
+    "max_per_call": {
+      "type": "string",
+      "title": "Max USDC per call",
+      "description": "Maximum USDC the wallet will spend on any single x402 call",
+      "default": "0.10",
+      "required": false,
+      "sensitive": false
+    },
+    "max_per_day": {
+      "type": "string",
+      "title": "Max USDC per day",
+      "description": "Maximum USDC the wallet will spend across all x402 calls per UTC day",
+      "default": "20.00",
+      "required": false,
+      "sensitive": false
+    }
+  }
+}
